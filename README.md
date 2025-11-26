@@ -8,39 +8,22 @@ The goal of this structure is to demonstrate **clean architecture**, modular des
 ## 📁 Package Structure – `com.warehouse.views`
 
 com.warehouse.views
-
 │
-
 ├── MainApplicationView.java      # Main window, navigation + content area
-
 │
-
 ├── components/                   # Reusable UI building blocks
-
 │   ├── HeaderBar.java
-
 │   └── NavigationPanel.java
-
 │
-
 ├── dashboard/                    # Overview / home screen
-
 │   └── MainDashboardView.java
-
 │
-
 ├── products/                     # Product management UI
-
 │   ├── ProductListView.java
-
 │   └── ProductFormView.java
-
 │
-
 └── orders/                       # Order / POS UI
-
 └── OrderFormView.java
-
 
 Each view is a **self-contained Swing panel or dialog**, making it easy to maintain, test, and extend.
 
@@ -80,4 +63,5 @@ public static void main(String[] args) {
     new MainApplicationView().setVisible(true);
 
 }
+
 
