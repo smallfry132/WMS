@@ -8,6 +8,7 @@ The goal of this structure is to demonstrate **clean architecture**, modular des
 ## 📁 Package Structure – `com.warehouse.views`
 
 com.warehouse.views
+
 │
 ├── MainApplicationView.java      # Main window, navigation + content area
 │
@@ -61,4 +62,5 @@ Run:
 ```java
 public static void main(String[] args) {
     new MainApplicationView().setVisible(true);
+
 }
