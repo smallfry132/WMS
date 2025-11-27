@@ -1,34 +1,31 @@
 package com.warehouse.views.products;
 
-import com.warehouse.services.WarehouseService;
+import com.warehouse.controllers.ProductController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Date;
 
-public class ProductFormView extends JDialog {
+public class ProductFormView extends JPanel {
 
-    private final WarehouseService warehouseService;
-    private boolean saved = false;
+    private final ProductController controller;
+    private final Runnable onSavedCallback;
 
     private final JTextField nameField  = new JTextField();
     private final JTextField catField   = new JTextField();
     private final JTextField qtyField   = new JTextField();
     private final JTextField priceField = new JTextField();
 
-    public ProductFormView(Window owner, WarehouseService service) {
-        super(owner, "Add Product", ModalityType.APPLICATION_MODAL);
-        this.warehouseService = service;
+    public ProductFormView(ProductController controller, Runnable onSavedCallback) {
+        this.controller = controller;
+        this.onSavedCallback = onSavedCallback;
         initUI();
     }
 
     private void initUI() {
-        setSize(400, 300);
-        setLocationRelativeTo(getOwner());
         setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel form = new JPanel(new GridLayout(4, 2, 5, 5));
-        form.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         form.add(new JLabel("Name:"));
         form.add(nameField);
@@ -42,15 +39,16 @@ public class ProductFormView extends JDialog {
         add(form, BorderLayout.CENTER);
 
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton save = new JButton("Save");
-        JButton cancel = new JButton("Cancel");
-        buttons.add(cancel);
+        JButton save   = new JButton("Save");
+        JButton clear  = new JButton("Clear");
+
+        buttons.add(clear);
         buttons.add(save);
 
         add(buttons, BorderLayout.SOUTH);
 
         save.addActionListener(e -> onSave());
-        cancel.addActionListener(e -> dispose());
+        clear.addActionListener(e -> clearFields());
     }
 
     private void onSave() {
@@ -60,10 +58,13 @@ public class ProductFormView extends JDialog {
             int qty     = Integer.parseInt(qtyField.getText().trim());
             double price = Double.parseDouble(priceField.getText().trim());
 
-            boolean ok = warehouseService.addProduct(name, cat, qty, price, new Date(), 1);
+            boolean ok = controller.addProduct(name, cat, qty, price);
             if (ok) {
-                saved = true;
-                dispose();
+                JOptionPane.showMessageDialog(this, "Product saved.");
+                clearFields();
+                if (onSavedCallback != null) {
+                    onSavedCallback.run();
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Failed to save product.");
             }
@@ -72,7 +73,10 @@ public class ProductFormView extends JDialog {
         }
     }
 
-    public boolean isSaved() {
-        return saved;
+    private void clearFields() {
+        nameField.setText("");
+        catField.setText("");
+        qtyField.setText("");
+        priceField.setText("");
     }
 }
